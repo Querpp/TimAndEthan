@@ -1,0 +1,29 @@
+% Infectious Disease Model (SIR)
+
+t0 = 0;
+tand = 365 * 5;
+s = 1000;
+R = 0;
+I = 11;
+x0 = [s;I;R];
+[t,y] = ode15s(@(t,y) InfectionRate(t,y),[t0 tand],x0);
+
+plot(t,y);
+
+function [dydt] = InfectionRate(~,x0)
+
+s = x0(1,1);
+I = x0(2,1);
+
+s0 = 1000;                          % Susceptible
+I0 = 1;                             % Infected 
+R0 = 0;                             % Removed/Recovered
+N = s0 + I0 + R0;                   % People Total
+b = 0.1;                            % Transmission rate (1/(persion*day))
+k = 11;                             % Number of days infection will last
+g = 1/k;                            % Recovery coefficient
+
+dydt(1,1) = -(b*(s*I))/N ;          % Rate of change of s (person/day)
+dydt(2,1) = ((b*(s*I))/N) - (g*I);  % Infected
+dydt(3,1) = g * I;                  % Recovered
+end
